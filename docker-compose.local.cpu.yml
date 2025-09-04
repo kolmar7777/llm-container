@@ -1,0 +1,45 @@
+version: "3.9"
+
+x-common: &common
+  image: ${IMAGE}
+  restart: unless-stopped
+  environment:
+    - MODEL_PATH=/models
+  volumes:
+    # Absolute host path recommended; set in .env.local
+    - ${MODELS_HOST_PATH}:/models:ro
+
+services:
+  llm-9010:
+    <<: *common
+    container_name: llm-9010
+    environment:
+      - PORT=9010
+      - MODEL_NAME=${MODEL_NAME_9010}
+      # Force CPU-only locally by hiding GPUs (harmless if none exist)
+      - CUDA_VISIBLE_DEVICES=
+      # Optional llama.cpp tuning for CPU:
+      # - EXTRA_ARGS=--n_gpu_layers 0
+    ports:
+      - "9010:9010"
+
+  llm-9011:
+    <<: *common
+    container_name: llm-9011
+    environment:
+      - PORT=9011
+      - MODEL_NAME=${MODEL_NAME_9011}
+      - CUDA_VISIBLE_DEVICES=
+    ports:
+      - "9011:9011"
+
+  llm-9012:
+    <<: *common
+    container_name: llm-9012
+    environment:
+      - PORT=9012
+      - MODEL_NAME=${MODEL_NAME_9012}
+      - CUDA_VISIBLE_DEVICES=
+    ports:
+      - "9012:9012"
+
